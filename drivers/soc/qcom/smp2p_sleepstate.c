@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2017, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2014-2018, The Linux Foundation. All rights reserved.
  * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -44,6 +44,7 @@ static int sleepstate_pm_notifier(struct notifier_block *nb,
 #else
 		gpio_set_value(slst_gpio_base_id + PROC_AWAKE_ID, 0);
 #endif
+		usleep_range(10000, 10500); /* Tuned based on SMP2P latencies */
 		msm_ipc_router_set_ws_allowed(true);
 		break;
 
@@ -52,7 +53,6 @@ static int sleepstate_pm_notifier(struct notifier_block *nb,
 #else
 		gpio_set_value(slst_gpio_base_id + PROC_AWAKE_ID, 1);
 #endif
-		usleep_range(10000, 10500); /* Tuned based on SMP2P latencies */
 		msm_ipc_router_set_ws_allowed(false);
 		break;
 	}
