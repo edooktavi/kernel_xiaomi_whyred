@@ -2306,7 +2306,6 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 			struct binder_fd_array_object *fda;
 			struct binder_buffer_object *parent;
 			struct binder_object ptr_object;
-			uintptr_t parent_buffer;
 			u32 *fd_array;
 			size_t fd_index;
 			binder_size_t fd_buf_size;
@@ -2329,14 +2328,6 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 			if (!parent) {
 				continue;
 			}
-			/*
-			 * Since the parent was already fixed up, convert it
-			 * back to kernel address space to access it
-			 */
-			parent_buffer = parent->buffer -
-				binder_alloc_get_user_buffer_offset(
-						&proc->alloc);
-
 			fd_buf_size = sizeof(u32) * fda->num_fds;
 			if (fda->num_fds >= SIZE_MAX / sizeof(u32)) {
 				continue;
@@ -2345,7 +2336,8 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
 			    fda->parent_offset > parent->length - fd_buf_size) {
 				continue;
 			}
-			fd_array = (u32 *)(parent_buffer + (uintptr_t)fda->parent_offset);
+			fd_array = (u32 *)(uintptr_t)
+				(parent->buffer + fda->parent_offset);
 			for (fd_index = 0; fd_index < fda->num_fds;
 			     fd_index++) {
 				u32 fd;
@@ -2538,7 +2530,6 @@ static int binder_translate_fd_array(struct binder_fd_array_object *fda,
 				     struct binder_transaction *in_reply_to)
 {
 	binder_size_t fdi, fd_buf_size;
-	uintptr_t parent_buffer;
 	u32 *fd_array;
 	struct binder_proc *target_proc = t->to_proc;
 
@@ -2550,13 +2541,7 @@ static int binder_translate_fd_array(struct binder_fd_array_object *fda,
 	    fda->parent_offset > parent->length - fd_buf_size) {
 		return -EINVAL;
 	}
-	/*
-	 * Since the parent was already fixed up, convert it
-	 * back to the kernel address space to access it
-	 */
-	parent_buffer = parent->buffer -
-		binder_alloc_get_user_buffer_offset(&target_proc->alloc);
-	fd_array = (u32 *)(parent_buffer + (uintptr_t)fda->parent_offset);
+	fd_array = (u32 *)(uintptr_t)(parent->buffer + fda->parent_offset);
 	if (!IS_ALIGNED((unsigned long)fd_array, sizeof(u32))) {
 		return -EINVAL;
 	}
@@ -2587,7 +2572,6 @@ static int binder_fixup_parent(struct binder_transaction *t,
 			       binder_size_t last_fixup_min_off)
 {
 	struct binder_buffer_object *parent;
-	u8 *parent_buffer;
 	struct binder_buffer *b = t->buffer;
 	struct binder_proc *target_proc = t->to_proc;
 	struct binder_object object;
@@ -2615,11 +2599,8 @@ static int binder_fixup_parent(struct binder_transaction *t,
 	    bp->parent_offset > parent->length - sizeof(binder_uintptr_t)) {
 		return -EINVAL;
 	}
-	parent_buffer = (u8 *)((uintptr_t)parent->buffer -
-			binder_alloc_get_user_buffer_offset(
-				&target_proc->alloc));
 	buffer_offset = bp->parent_offset +
-			(uintptr_t)parent_buffer - (uintptr_t)b->data;
+			(uintptr_t)parent->buffer - (uintptr_t)b->data;
 	binder_alloc_copy_to_buffer(&target_proc->alloc, b, buffer_offset,
 				    &bp->buffer, sizeof(bp->buffer));
 
@@ -3180,9 +3161,7 @@ static void binder_transaction(struct binder_proc *proc,
 				goto err_copy_data_failed;
 			}
 			/* Fixup buffer pointer to target proc address space */
-			bp->buffer = (uintptr_t)sg_bufp +
-				binder_alloc_get_user_buffer_offset(
-						&target_proc->alloc);
+			bp->buffer = (uintptr_t)sg_bufp;
 			sg_bufp += ALIGN(bp->length, sizeof(u64));
 
 			ret = binder_fixup_parent(t, thread, bp,
@@ -4099,8 +4078,7 @@ retry:
 		tr.data_size = t->buffer->data_size;
 		tr.offsets_size = t->buffer->offsets_size;
 		tr.data.ptr.buffer = (binder_uintptr_t)
-			((uintptr_t)t->buffer->data +
-			binder_alloc_get_user_buffer_offset(&proc->alloc));
+			(uintptr_t)t->buffer->data;
 		tr.data.ptr.offsets = tr.data.ptr.buffer +
 					ALIGN(t->buffer->data_size,
 					    sizeof(void *));
