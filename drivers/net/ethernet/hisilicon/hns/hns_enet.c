@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2014-2015 Hisilicon Limited.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,6 +174,7 @@ netdev_tx_t hns_nic_net_xmit_hw(struct net_device *ndev,
 	netdev_tx_sent_queue(dev_queue, skb->len);
 
 	ndev->trans_start = jiffies;
+	netif_trans_update(ndev);
 	ndev->stats.tx_bytes += skb->len;
 	ndev->stats.tx_packets++;
 
@@ -1095,7 +1097,6 @@ static netdev_tx_t hns_nic_net_xmit(struct sk_buff *skb,
 	struct hns_nic_priv *priv = netdev_priv(ndev);
 
 	assert(skb->queue_mapping < ndev->ae_handle->q_num);
-
 	return hns_nic_net_xmit_hw(ndev, skb,
 				   &tx_ring_data(priv, skb->queue_mapping));
 }
