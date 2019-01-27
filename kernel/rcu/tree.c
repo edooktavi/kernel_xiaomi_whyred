@@ -828,7 +828,7 @@ void rcu_irq_exit(void)
 	//} else
 		rcu_eqs_enter_common(oldval, true);
 	rcu_sysidle_enter(1);
-//}
+}
 
 /*
  * Wrapper for rcu_irq_exit() where interrupts are enabled.
@@ -971,7 +971,7 @@ void rcu_irq_enter(void)
 	//} else
 		rcu_eqs_exit_common(oldval, true);
 	rcu_sysidle_exit(1);
-//}
+}
 
 /*
  * Wrapper for rcu_irq_enter() where interrupts are enabled.
