@@ -1430,7 +1430,7 @@ int blk_reinsert_request(struct request_queue *q, struct request *rq)
 
 	blk_delete_timer(rq);
 	blk_clear_rq_complete(rq);
-	trace_block_rq_requeue(q, rq);
+//	trace_block_rq_requeue(q, rq);
 
 	if (rq->cmd_flags & REQ_QUEUED)
 		blk_queue_end_tag(q, rq);
@@ -1877,14 +1877,14 @@ get_rq:
 		 * If this is the first request added after a plug, fire
 		 * of a plug trace.
 		 */
-		if (!request_count) {
+//		if (!request_count) {
 //			trace_block_plug(q);
-		} else {
+//		} else {
 			if (request_count >= BLK_MAX_REQUEST_COUNT) {
 				blk_flush_plug_list(plug, false);
 //				trace_block_plug(q);
 			}
-		}
+//		}
 		list_add_tail(&req->queuelist, &plug->list);
 		blk_account_io_start(req, true);
 	} else {

@@ -900,7 +900,7 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
 		break;
 	}
 
-	if ((unsigned)ipinr < NR_IPI)
+	//if ((unsigned)ipinr < NR_IPI)
 		//trace_ipi_exit_rcuidle(ipi_types[ipinr]);
 
 	per_cpu(pending_ipi, cpu) = false;

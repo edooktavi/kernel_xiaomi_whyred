@@ -823,12 +823,12 @@ void rcu_irq_exit(void)
 	rdtp->dynticks_nesting--;
 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
 		     rdtp->dynticks_nesting < 0);
-	if (rdtp->dynticks_nesting) {
+	//if (rdtp->dynticks_nesting) {
 //		trace_rcu_dyntick(TPS("--="), oldval, rdtp->dynticks_nesting);
-	} else
+	//} else
 		rcu_eqs_enter_common(oldval, true);
 	rcu_sysidle_enter(1);
-}
+//}
 
 /*
  * Wrapper for rcu_irq_exit() where interrupts are enabled.
@@ -966,12 +966,12 @@ void rcu_irq_enter(void)
 	rdtp->dynticks_nesting++;
 	WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
 		     rdtp->dynticks_nesting == 0);
-	if (oldval) {
+	//if (oldval) {
 //		trace_rcu_dyntick(TPS("++="), oldval, rdtp->dynticks_nesting);
-	} else
+	//} else
 		rcu_eqs_exit_common(oldval, true);
 	rcu_sysidle_exit(1);
-}
+//}
 
 /*
  * Wrapper for rcu_irq_enter() where interrupts are enabled.
@@ -1712,12 +1712,12 @@ rcu_start_future_gp(struct rcu_node *rnp, struct rcu_data *rdp,
 	rnp_root->need_future_gp[c & 0x1]++;
 
 	/* If a grace period is not already in progress, start one. */
-	if (rnp_root->gpnum != rnp_root->completed) {
+//	if (rnp_root->gpnum != rnp_root->completed) {
 //		trace_rcu_future_gp(rnp, rdp, c, TPS("Startedleafroot"));
-	} else {
+//	} else {
 //		trace_rcu_future_gp(rnp, rdp, c, TPS("Startedroot"));
 		ret = rcu_start_gp_advanced(rdp->rsp, rnp_root, rdp);
-	}
+//	}
 unlock_out:
 	if (rnp != rnp_root)
 		raw_spin_unlock(&rnp_root->lock);
