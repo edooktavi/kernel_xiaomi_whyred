@@ -44,9 +44,6 @@
 #include <linux/profile.h>
 #include <linux/notifier.h>
 #include <linux/vmpressure.h>
-#include <linux/cpu_input_boost.h>
-
-#define BOOST_DURATION_MS (250)
 
 
 #define CONFIG_CONVERT_ADJ_TO_SCORE_ADJ
@@ -162,7 +159,6 @@ static unsigned long lowmem_scan(struct shrinker *s, struct shrink_control *sc)
 
 	selected_oom_score_adj = min_score_adj;
 
-	cpu_input_boost_kick_max(BOOST_DURATION_MS);
 	rcu_read_lock();
 again:
 	for_each_process(tsk) {
