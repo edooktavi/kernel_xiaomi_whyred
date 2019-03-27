@@ -82,7 +82,6 @@
 #include <linux/cpufreq_times.h>
 #include <linux/cpufreq.h>
 #include <linux/cpu_input_boost.h>
-#include <linux/state_notifier.h>
 
 #include <linux/rtmm.h>
 
@@ -1817,7 +1816,7 @@ long _do_fork(unsigned long clone_flags,
 	long nr;
 
 	/* Boost CPU to the max for 1250 ms when userspace launches an app */
-	if (is_zygote_pid(current->pid) && !state_suspended)
+	if (is_zygote_pid(current->pid))
 		cpu_input_boost_kick_max(1250);
 
 	/*
