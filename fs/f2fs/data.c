@@ -142,7 +142,7 @@ static bool f2fs_bio_post_read_required(struct bio *bio)
 
 static void f2fs_read_end_io(struct bio *bio)
 {
-	struct page *first_page = bio->bi_io_vec[0].bv_page;
+	//struct page *first_page = bio->bi_io_vec[0].bv_page;
 
 	if (time_to_inject(F2FS_P_SB(bio->bi_io_vec->bv_page), FAULT_READ_IO)) {
 		f2fs_show_injection_info(FAULT_READ_IO);
@@ -1698,7 +1698,7 @@ static int f2fs_read_data_pages(struct file *file,
 			struct list_head *pages, unsigned nr_pages)
 {
 	struct inode *inode = mapping->host;
-	struct page *page = list_last_entry(pages, struct page, lru);
+	//struct page *page = list_last_entry(pages, struct page, lru);
 
 	//trace_f2fs_readpages(inode, page, nr_pages);
 
@@ -1899,7 +1899,7 @@ got_it:
 			if (PageWriteback(page))
 				end_page_writeback(page);
 		}
-//		trace_f2fs_do_write_data_page(fio->page, IPU);
+		//trace_f2fs_do_write_data_page(fio->page, IPU);
 		set_inode_flag(inode, FI_UPDATE_WRITE);
 		return err;
 	}
@@ -2458,7 +2458,7 @@ static int f2fs_write_begin(struct file *file, struct address_space *mapping,
 		char *path, pathbuf[MAX_TRACE_PATHBUF_LEN];
 
 		path = android_fstrace_get_pathname(pathbuf,
-						    MAX_TRACE_PATHBUF_LEN,
+						    MAX_trace_PATHBUF_LEN,
 						    inode);
 		trace_android_fs_datawrite_start(inode, pos, len,
 						 current->pid, path,
@@ -2748,14 +2748,14 @@ static ssize_t f2fs_direct_IO(struct kiocb *iocb, struct iov_iter *iter,
 		}
 	}
 out:
-	/*if (trace_android_fs_dataread_start_enabled() &&
+	if (trace_android_fs_dataread_start_enabled() &&
 	    (iov_iter_rw(iter) == READ))
-		trace_android_fs_dataread_end(inode, offset, count);
+		//trace_android_fs_dataread_end(inode, offset, count);
 	if (trace_android_fs_datawrite_start_enabled() &&
 	    (iov_iter_rw(iter) == WRITE))
-		trace_android_fs_datawrite_end(inode, offset, count);
+		//trace_android_fs_datawrite_end(inode, offset, count);
 
-	trace_f2fs_direct_IO_exit(inode, offset, count, rw, err);*/
+	//trace_f2fs_direct_IO_exit(inode, offset, count, rw, err);
 
 	return err;
 }
