@@ -3166,7 +3166,7 @@
 					qcom,dim-mode = "hybrid";
 					qcom,hyb-thres = <0x271>;
 					qcom,sync-dly-us = <0x320>;
-					qcom,fs-curr-ua = <0x4e20>;
+					qcom,fs-curr-ua = <0x4650>;
 					qcom,cons-sync-write-delay-us = <0x3e8>;
 					qcom,led-strings-list = [00 01];
 					qcom,loop-auto-gm-en;
