@@ -81,7 +81,6 @@
 #include <linux/kcov.h>
 #include <linux/cpufreq_times.h>
 
-#include <linux/rtmm.h>
 
 #include <asm/pgtable.h>
 #include <asm/pgalloc.h>
@@ -168,26 +167,17 @@ void __weak arch_release_thread_stack(unsigned long *stack)
 static unsigned long *alloc_thread_stack_node(struct task_struct *tsk,
 						  int node)
 {
-#ifdef CONFIG_RTMM
-	struct page *page = rtmm_alloc(RTMM_POOL_THREADINFO);
-#else
 	struct page *page = alloc_kmem_pages_node(node, THREADINFO_GFP,
 						  THREAD_SIZE_ORDER);
-#endif
 
 	return page ? page_address(page) : NULL;
 }
 
 static inline void free_thread_stack(unsigned long *stack)
 {
-#ifdef CONFIG_RTMM
-	kasan_alloc_pages(virt_to_page(stack), THREAD_SIZE_ORDER);
-	rtmm_free(stack, RTMM_POOL_THREADINFO);
-#else
 	kasan_alloc_pages(virt_to_page(stack), THREAD_SIZE_ORDER);
         kaiser_unmap_thread_stack(stack);
 	free_kmem_pages((unsigned long)stack, THREAD_SIZE_ORDER);
-#endif
 }
 # else
 static struct kmem_cache *thread_stack_cache;
