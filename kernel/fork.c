@@ -1209,7 +1209,7 @@ static void posix_cpu_timers_init_group(struct signal_struct *sig)
 
 	cpu_limit = READ_ONCE(sig->rlim[RLIMIT_CPU].rlim_cur);
 	if (cpu_limit != RLIM_INFINITY) {
-		sig->cputime_expires.prof_exp = cpu_limit * NSEC_PER_SEC;
+		sig->cputime_expires.prof_exp = secs_to_cputime(cpu_limit);
 		sig->cputimer.running = true;
 	}
 
@@ -1467,15 +1467,13 @@ static struct task_struct *copy_process(unsigned long clone_flags,
 	init_sigpending(&p->pending);
 
 	p->utime = p->stime = p->gtime = 0;
-#ifdef CONFIG_ARCH_HAS_SCALED_CPUTIME
 	p->utimescaled = p->stimescaled = 0;
-#endif
 	prev_cputime_init(&p->prev_cputime);
 
 #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
-	seqcount_init(&p->vtime.seqcount);
-	p->vtime.starttime = 0;
-	p->vtime.state = VTIME_INACTIVE;
+	seqcount_init(&p->vtime_seqcount);
+	p->vtime_snap = 0;
+	p->vtime_snap_whence = VTIME_INACTIVE;
 #endif
 
 #if defined(SPLIT_RSS_COUNTING)

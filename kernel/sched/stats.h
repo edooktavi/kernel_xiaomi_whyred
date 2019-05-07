@@ -211,7 +211,7 @@ static inline bool cputimer_running(struct task_struct *tsk)
  * running CPU and update the utime field there.
  */
 static inline void account_group_user_time(struct task_struct *tsk,
-					   u64 cputime)
+					   cputime_t cputime)
 {
 	struct thread_group_cputimer *cputimer = &tsk->signal->cputimer;
 
@@ -232,7 +232,7 @@ static inline void account_group_user_time(struct task_struct *tsk,
  * running CPU and update the stime field there.
  */
 static inline void account_group_system_time(struct task_struct *tsk,
-					     u64 cputime)
+					     cputime_t cputime)
 {
 	struct thread_group_cputimer *cputimer = &tsk->signal->cputimer;
 
