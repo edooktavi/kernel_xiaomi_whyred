@@ -16396,7 +16396,7 @@ qcom,cpr-voltage-ceiling =
 		qcom,mdss-dsi-dynamic-bitclk_freq = <798240576 801594528 804948480
 		808302432 811656384>;
 		qcom,ulps-enabled;
-		qcom,suspend-ulps-enabled;
+		//qcom,suspend-ulps-enabled;
 		qcom,mdss-dsi-panel-hdr-enabled;
 		qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
 			17000 15500 30000 8000 3000>;
@@ -16515,7 +16515,7 @@ qcom,cpr-voltage-ceiling =
 		qcom,mdss-dsi-dynamic-bitclk_freq = <798240576 801594528 804948480
 		808302432 811656384>;
 		qcom,ulps-enabled;
-		qcom,suspend-ulps-enabled;
+		//qcom,suspend-ulps-enabled;
 		qcom,mdss-dsi-panel-hdr-enabled;
 		qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
 			17000 15500 30000 8000 3000>;
@@ -17266,7 +17266,7 @@ qcom,cpr-voltage-ceiling =
 		qcom,mdss-dsi-dynamic-bitclk_freq = <798240576 801594528 804948480
 		808302432 811656384>;
 		qcom,ulps-enabled;
-		qcom,suspend-ulps-enabled;
+		//qcom,suspend-ulps-enabled;
 		qcom,mdss-dsi-panel-hdr-enabled;
 		qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
 			17000 15500 30000 8000 3000>;
@@ -17385,7 +17385,7 @@ qcom,cpr-voltage-ceiling =
 		qcom,mdss-dsi-dynamic-bitclk_freq = <798240576 801594528 804948480
 		808302432 811656384>;
 		qcom,ulps-enabled;
-		qcom,suspend-ulps-enabled;
+		//qcom,suspend-ulps-enabled;
 		qcom,mdss-dsi-panel-hdr-enabled;
 		qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
 			17000 15500 30000 8000 3000>;
@@ -17504,7 +17504,7 @@ qcom,cpr-voltage-ceiling =
 		qcom,mdss-dsi-dynamic-bitclk_freq = <798240576 801594528 804948480
 		808302432 811656384>;
 		qcom,ulps-enabled;
-		qcom,suspend-ulps-enabled;
+		//qcom,suspend-ulps-enabled;
 		qcom,mdss-dsi-panel-hdr-enabled;
 		qcom,mdss-dsi-panel-hdr-color-primaries = <14500 15500 32000
 			17000 15500 30000 8000 3000>;
