@@ -3,6 +3,7 @@
  * Android IPC Subsystem
  *
  * Copyright (C) 2007-2008 Google, Inc.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This software is licensed under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation, and
@@ -354,6 +355,8 @@ struct binder_error {
  * @accept_fds:           file descriptor operations supported for node
  *                        (invariant after initialized)
  * @min_priority:         minimum scheduling priority
+ *                        (invariant after initialized)
+ * @txn_security_ctx:     require sender's security context
  *                        (invariant after initialized)
  * @inherit_rt:           inherit RT scheduling policy from caller
  * @txn_security_ctx:     require sender's security context
@@ -2906,6 +2909,8 @@ static void binder_transaction(struct binder_proc *proc,
 	char *secctx = NULL;
 	u32 secctx_sz = 0;
 
+	char *secctx = NULL;
+	u32 secctx_sz = 0;
 	e = binder_transaction_log_add(&binder_transaction_log);
 	e->debug_id = t_debug_id;
 	e->call_type = reply ? 2 : !!(tr->flags & TF_ONE_WAY);
@@ -4304,10 +4309,10 @@ retry:
 			trd->cookie = 0;
 			cmd = BR_REPLY;
 		}
+
 		trd->code = t->code;
 		trd->flags = t->flags;
 		trd->sender_euid = from_kuid(current_user_ns(), t->sender_euid);
-
 		t_from = binder_get_txn_from(t);
 		if (t_from) {
 			struct task_struct *sender = t_from->proc->tsk;
