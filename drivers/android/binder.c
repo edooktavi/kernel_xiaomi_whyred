@@ -2908,8 +2908,6 @@ static void binder_transaction(struct binder_proc *proc,
 	char *secctx = NULL;
 	u32 secctx_sz = 0;
 
-	char *secctx = NULL;
-	u32 secctx_sz = 0;
 	e = binder_transaction_log_add(&binder_transaction_log);
 	e->debug_id = t_debug_id;
 	e->call_type = reply ? 2 : !!(tr->flags & TF_ONE_WAY);
