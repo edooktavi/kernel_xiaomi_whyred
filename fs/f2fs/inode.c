@@ -66,7 +66,8 @@ static void __get_inode_rdev(struct inode *inode, struct f2fs_inode *ri)
 	}
 }
 
-static bool __written_first_block(struct f2fs_inode *ri)
+static int __written_first_block(struct f2fs_sb_info *sbi,
+					struct f2fs_inode *ri)
 {
 	block_t addr = le32_to_cpu(ri->i_addr[offset_in_addr(ri)]);
 
@@ -368,6 +369,11 @@ static int do_read_inode(struct inode *inode)
 		 * we get the space back only from inline_data.
 		 */
 		fi->i_inline_xattr_size = 0;
+	}
+
+	if (!sanity_check_inode(inode, node_page)) {
+		f2fs_put_page(node_page, 1);
+		return -EINVAL;
 	}
 
 	/* check data exist */

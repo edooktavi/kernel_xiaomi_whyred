@@ -1612,6 +1612,10 @@ got_it:
 				SetPageUptodate(page);
 				goto confused;
 			}
+
+			if (!f2fs_is_valid_blkaddr(F2FS_I_SB(inode), block_nr,
+								DATA_GENERIC))
+				goto set_error_page;
 		} else {
 zero_out:
 			zero_user_segment(page, 0, PAGE_SIZE);
