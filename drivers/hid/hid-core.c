@@ -218,14 +218,16 @@ static int hid_add_usage(struct hid_parser *parser, unsigned usage, u8 size)
 		hid_err(parser->device, "usage index exceeded\n");
 		return -1;
 	}
-	parser->local.usage[parser->local.usage_index] = usage;
 
-	/*
-	 * If Usage item only includes usage id, concatenate it with
-	 * currently defined usage page
-	 */
-	if (size <= 2)
-		complete_usage(parser, parser->local.usage_index);
+	if (!parser->local.usage_index && parser->global.usage_page)
+		parser->local.usage_page_preceding = 1;
+	if (parser->local.usage_page_preceding == 2)
+		parser->local.usage_page_preceding = 3;
+	if (size <= 2 && parser->global.usage_page)
+		parser->local.usage[parser->local.usage_index] =
+			(usage & 0xffff) + (parser->global.usage_page << 16);
+	else
+		parser->local.usage[parser->local.usage_index] = usage;
 
 	parser->local.usage_size[parser->local.usage_index] = size;
 	parser->local.collection_index[parser->local.usage_index] =
@@ -366,6 +368,8 @@ static int hid_parser_global(struct hid_parser *parser, struct hid_item *item)
 
 	case HID_GLOBAL_ITEM_TAG_USAGE_PAGE:
 		parser->global.usage_page = item_udata(item);
+		if (parser->local.usage_page_preceding == 1)
+			parser->local.usage_page_preceding = 2;
 		return 0;
 
 	case HID_GLOBAL_ITEM_TAG_LOGICAL_MINIMUM:
@@ -543,6 +547,7 @@ static int hid_parser_local(struct hid_parser *parser, struct hid_item *item)
  * usage value."
  */
 
+<<<<<<< HEAD
 static void hid_concatenate_last_usage_page(struct hid_parser *parser)
 {
 	int i;
@@ -569,6 +574,22 @@ static void hid_concatenate_last_usage_page(struct hid_parser *parser)
 
 		complete_usage(parser, i);
 	}
+=======
+static void hid_concatenate_usage_page(struct hid_parser *parser)
+{
+	int i;
+
+	if (parser->local.usage_page_preceding == 3) {
+		dbg_hid("Using preceding usage page for final usage\n");
+		return;
+	}
+
+	for (i = 0; i < parser->local.usage_index; i++)
+		if (parser->local.usage_size[i] <= 2)
+			parser->local.usage[i] =
+				(parser->global.usage_page << 16)
+				+ (parser->local.usage[i] & 0xffff);
+>>>>>>> 1c79c165ac7f8a08670e74ba34699d22ea203347
 }
 
 /*
@@ -580,7 +601,11 @@ static int hid_parser_main(struct hid_parser *parser, struct hid_item *item)
 	__u32 data;
 	int ret;
 
+<<<<<<< HEAD
 	hid_concatenate_last_usage_page(parser);
+=======
+	hid_concatenate_usage_page(parser);
+>>>>>>> 1c79c165ac7f8a08670e74ba34699d22ea203347
 
 	data = item_udata(item);
 
@@ -795,7 +820,11 @@ static int hid_scan_main(struct hid_parser *parser, struct hid_item *item)
 	__u32 data;
 	int i;
 
+<<<<<<< HEAD
 	hid_concatenate_last_usage_page(parser);
+=======
+	hid_concatenate_usage_page(parser);
+>>>>>>> 1c79c165ac7f8a08670e74ba34699d22ea203347
 
 	data = item_udata(item);
 
@@ -2095,6 +2124,9 @@ static const struct hid_device_id hid_have_special_driver[] = {
 	{ HID_USB_DEVICE(USB_VENDOR_ID_UCLOGIC, USB_DEVICE_ID_UCLOGIC_TABLET_WP1062) },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_UCLOGIC, USB_DEVICE_ID_UCLOGIC_WIRELESS_TABLET_TWHL850) },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_UCLOGIC, USB_DEVICE_ID_UCLOGIC_TABLET_TWHA60) },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_VALVE, USB_DEVICE_ID_STEAM_CONTROLLER) },
+	{ HID_USB_DEVICE(USB_VENDOR_ID_VALVE, USB_DEVICE_ID_STEAM_CONTROLLER_WIRELESS) },
+	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_VALVE, USB_DEVICE_ID_STEAM_CONTROLLER_BT) },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_WISEGROUP, USB_DEVICE_ID_SMARTJOY_PLUS) },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_WISEGROUP, USB_DEVICE_ID_SUPER_JOY_BOX_3) },
 	{ HID_USB_DEVICE(USB_VENDOR_ID_WISEGROUP, USB_DEVICE_ID_DUAL_USB_JOYPAD) },
